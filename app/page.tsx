@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div>
-      <main className="">
+      <main className="text-green-800">
         <p>Placeholder for main</p>
       </main>
 
