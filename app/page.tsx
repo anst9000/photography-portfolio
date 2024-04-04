@@ -2,6 +2,15 @@
 
 import { Tab } from "@headlessui/react"
 import Link from "next/link"
+import Masonry from "react-masonry-css"
+import classNames from "classnames"
+import Image from "next/image"
+
+import ocean1 from "../public/ocean-1.jpeg"
+import ocean2 from "../public/ocean-2.jpeg"
+import ocean3 from "../public/ocean-3.jpeg"
+import ocean4 from "../public/ocean-4.jpeg"
+import ocean5 from "../public/ocean-5.jpeg"
 
 const tabs = [
   {
@@ -18,20 +27,28 @@ const tabs = [
   },
 ]
 
+const images = [
+  { id: 1, value: ocean1 },
+  { id: 2, value: ocean2 },
+  { id: 3, value: ocean3 },
+  { id: 4, value: ocean4 },
+  { id: 5, value: ocean5 },
+]
+
 export default function Home() {
   return (
-    <div className="flex flex-col h-full bg-[url('/photography-bg.jpg')] bg-top bg-cover">
-      <header className="flex justify-between items-center h-20 px-6">
-        <div className="text-center">Photography Portfolio</div>
+    <div className="h-full bg-[url('/photography-bg.jpg')] bg-right bg-cover overflow-auto">
+      <header className="fixed top-0 w-full z-10 bg-stone-900 bg-opacity-40 flex justify-between items-center h-24 px-12 py-6">
+        <span className="text-3xl font-medium">Photography Portfolio</span>
         <Link
           href="#"
-          className="rounded-3xl bg-white text-stone-700 px-3 py-2 hover:bg-opacity-90"
+          className="text-lg rounded-3xl bg-white text-stone-700 px-3 py-2 hover:bg-opacity-90"
         >
           Get in touch
         </Link>
       </header>
 
-      <main className="grow">
+      <main className="pt-32">
         <div className="flex flex-col items-center h-full">
           <Tab.Group>
             <Tab.List className="flex items-center gap-12">
@@ -39,7 +56,10 @@ export default function Home() {
                 <Tab key={tab.key}>
                   {({ selected }) => (
                     <span
-                      className={selected ? "text-white" : "text-stone-600"}
+                      className={classNames(
+                        "uppercase text-xl",
+                        selected ? "border-b-2 text-white" : "text-stone-600"
+                      )}
                     >
                       {tab.display}
                     </span>
@@ -47,8 +67,28 @@ export default function Home() {
                 </Tab>
               ))}
             </Tab.List>
-            <Tab.Panels className="h-full bg-stone-900 bg-opacity-80 max-w-[900px] w-full p-2 sm:p-4 my-6">
-              <Tab.Panel className="">All Photos</Tab.Panel>
+            <Tab.Panels className="h-full max-w-[900px] w-full p-2 sm:p-4 my-6 bg-stone-900 bg-opacity-30">
+              <Tab.Panel>
+                <Masonry
+                  breakpointCols={2}
+                  className="flex gap-4"
+                  columnClassName=""
+                >
+                  {images.map((img) => (
+                    <Image
+                      key={img.id}
+                      src={img.value}
+                      alt="placeholder"
+                      className="mb-4 border-2"
+                    />
+                  ))}
+                  {/* <img
+                    className="mb-4 border-2"
+                    src="/ocean-1.jpeg"
+                    alt="ocean-1"
+                  /> */}
+                </Masonry>
+              </Tab.Panel>
               <Tab.Panel>Oceans</Tab.Panel>
               <Tab.Panel>Forests</Tab.Panel>
             </Tab.Panels>
@@ -56,7 +96,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="h-12 flex justify-center items-center">
+      <footer className="h-24 flex justify-center items-center text-lg font-medium">
         <p>Photography Portfolio</p>
       </footer>
     </div>
