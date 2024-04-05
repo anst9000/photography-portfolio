@@ -6,28 +6,13 @@ import { Tab } from "@headlessui/react"
 import Link from "next/link"
 import { GetStaticProps } from "next"
 
-import Masonry from "react-masonry-css"
 import classNames from "classnames"
 import Image from "next/image"
 import { getImages } from "../utils/image-util"
 
-// LIGHTGALLERY
-import LightGalleryComponent from "lightgallery/react"
-import type { LightGallery } from "lightgallery/lightgallery"
-import "lightgallery/css/lightgallery.css"
-import "lightgallery/css/lg-zoom.css"
-import "lightgallery/css/lg-thumbnail.css"
-import lgThumbnail from "lightgallery/plugins/thumbnail"
-import lgZoom from "lightgallery/plugins/zoom"
-
 import bgImage from "../public/photography-bg.jpg"
 
-import ocean1 from "../public/ocean-1.jpeg"
-import ocean2 from "../public/ocean-2.jpeg"
-import ocean3 from "../public/ocean-3.jpeg"
-import ocean4 from "../public/ocean-4.jpeg"
-import ocean5 from "../public/ocean-5.jpeg"
-import { useMemo, useRef } from "react"
+import { useMemo } from "react"
 import { Gallery } from "@/components/Gallery"
 
 const tabs = [
@@ -89,7 +74,9 @@ export default function Home({ oceans, forests }: HomeProps) {
       <div className="fixed left-0 top-0 w-full h-full z-10 bg-gradient-to-b from-stone-900"></div>
 
       <header className="fixed top-0 w-full z-30 bg-stone-900 bg-opacity-50 flex justify-between items-center h-24 px-12 py-6">
-        <span className="text-3xl font-medium">Photography Portfolio</span>
+        <span className="text-3xl font-medium border p-2">
+          Photography Portfolio
+        </span>
         <Link
           href="#"
           className="outline outline-offset-2 outline-white text-lg rounded-3xl bg-white text-stone-700 px-3 py-2 hover:bg-opacity-90"
@@ -133,7 +120,7 @@ export default function Home({ oceans, forests }: HomeProps) {
       </main>
 
       <footer className="relative h-24 z-20 flex justify-center items-center text-lg font-medium">
-        <p>Photography Portfolio</p>
+        <p className=" border p-2">Photography Portfolio</p>
       </footer>
     </div>
   )

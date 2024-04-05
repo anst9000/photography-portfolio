@@ -1,11 +1,11 @@
 import type { Photo } from "../types"
-import LightGalleryComponent from "lightgallery/react"
-import { LightGallery } from "lightgallery/lightgallery"
 import { useRef } from "react"
 import Image from "next/image"
 import Masonry from "react-masonry-css"
 
-// import styles
+// LIGHTGALLERY
+import LightGalleryComponent from "lightgallery/react"
+import type { LightGallery } from "lightgallery/lightgallery"
 import "lightgallery/css/lightgallery.css"
 import "lightgallery/css/lg-zoom.css"
 import "lightgallery/css/lg-thumbnail.css"
@@ -35,7 +35,6 @@ export function Gallery({ photos }: GalleryProps) {
             placeholder="blur"
             blurDataURL={photo.blurDataURL}
             onClick={() => {
-              console.log("click", idx)
               lightboxRef.current?.openGallery(idx)
             }}
           />
@@ -53,7 +52,7 @@ export function Gallery({ photos }: GalleryProps) {
         dynamic
         dynamicEl={photos.map((photo) => ({
           src: photo.src,
-          thumb: photo.src,
+          thumb: photo.thumb,
         }))}
       />
     </>
