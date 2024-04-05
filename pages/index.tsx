@@ -1,10 +1,15 @@
-"use client"
+import { createApi } from "unsplash-js"
+import * as nodeFetch from "node-fetch"
+import type { Photo } from "../types"
 
 import { Tab } from "@headlessui/react"
 import Link from "next/link"
+import { GetStaticProps } from "next"
+
 import Masonry from "react-masonry-css"
 import classNames from "classnames"
 import Image from "next/image"
+import { getImages } from "../utils/image-util"
 
 // LIGHTGALLERY
 import LightGalleryComponent from "lightgallery/react"
@@ -22,7 +27,8 @@ import ocean2 from "../public/ocean-2.jpeg"
 import ocean3 from "../public/ocean-3.jpeg"
 import ocean4 from "../public/ocean-4.jpeg"
 import ocean5 from "../public/ocean-5.jpeg"
-import { useRef } from "react"
+import { useMemo, useRef } from "react"
+import { Gallery } from "@/components/Gallery"
 
 const tabs = [
   {
@@ -39,10 +45,37 @@ const tabs = [
   },
 ]
 
-const images = [ocean1, ocean2, ocean3, ocean4, ocean5]
+type HomeProps = {
+  oceans: Photo[]
+  forests: Photo[]
+}
 
-export default function Home() {
-  const lightboxRef = useRef<LightGallery | null>(null)
+export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+  const unsplash = createApi({
+    accessKey: process.env.UNSPLASH_ACCESS_KEY!,
+    fetch: nodeFetch as unknown as typeof fetch,
+  })
+
+  const [oceans, forests] = await Promise.all([
+    getImages(unsplash, "oceans"),
+    getImages(unsplash, "forests"),
+  ])
+
+  return {
+    props: {
+      oceans,
+      forests,
+    },
+    // revalidate: 10,    uncomment for ISR
+  }
+}
+
+export default function Home({ oceans, forests }: HomeProps) {
+  const allPhotos = useMemo(() => {
+    const all = [...oceans, ...forests]
+
+    return all.sort((a, b) => b.likes - a.likes)
+  }, [oceans, forests])
 
   return (
     <div className="h-full overflow-auto">
@@ -85,43 +118,15 @@ export default function Home() {
               ))}
             </Tab.List>
             <Tab.Panels className="h-full max-w-[900px] w-full p-2 sm:p-4 my-6 bg-stone-900 bg-opacity-30">
-              <Tab.Panel>
-                <Masonry
-                  breakpointCols={2}
-                  className="flex gap-4"
-                  columnClassName=""
-                >
-                  {images.map((img, idx) => (
-                    <Image
-                      key={idx}
-                      src={img}
-                      alt={`image ${idx}`}
-                      placeholder="blur"
-                      className="mb-4 border-2 rounded-md cursor-pointer hover:scale-[101%] transition-all duration-500"
-                      onClick={() => {
-                        lightboxRef.current?.openGallery(idx)
-                      }}
-                    />
-                  ))}
-                </Masonry>
-
-                <LightGalleryComponent
-                  onInit={(ref) => {
-                    if (ref) {
-                      lightboxRef.current = ref.instance
-                    }
-                  }}
-                  speed={500}
-                  plugins={[lgThumbnail, lgZoom]}
-                  dynamic={true}
-                  dynamicEl={images.map((img) => ({
-                    src: img.src,
-                    thumb: img.src,
-                  }))}
-                />
+              <Tab.Panel className="overflow-auto">
+                <Gallery photos={allPhotos} />
               </Tab.Panel>
-              <Tab.Panel>Oceans</Tab.Panel>
-              <Tab.Panel>Forests</Tab.Panel>
+              <Tab.Panel className="overflow-auto">
+                <Gallery photos={oceans} />
+              </Tab.Panel>
+              <Tab.Panel className="overflow-auto">
+                <Gallery photos={forests} />
+              </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </div>
